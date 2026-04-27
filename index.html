@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suivi de Colis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>📦 Suivi de Colis</h1>
+    <p>Entrez votre numéro de suivi pour localiser votre colis</p>
+  </header>
+
+  <main>
+    <div class="search-box">
+      <input type="text" id="tracking-input" placeholder="Ex: 1Z999AA10123456784" />
+      <button onclick="rechercherColis()">Rechercher</button>
+    </div>
+    <div id="resultat"></div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
