@@ -3,22 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Suivi de Colis</title>
+  <title>TrackColis — Suivi en temps réel</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
   <header>
-    <h1>📦 Suivi de Colis</h1>
-    <p>Entrez votre numéro de suivi pour localiser votre colis</p>
+    <div class="logo">📦🔍 TrackColis</div>
+    <p class="tagline">Suivez vos colis en temps réel — partout dans le monde</p>
   </header>
 
   <main>
-    <div class="search-box">
-      <input type="text" id="tracking-input" placeholder="Ex: 1Z999AA10123456784" />
-      <button onclick="rechercherColis()">Rechercher</button>
+    <!-- Recherche -->
+    <div class="search-card">
+      <h2>🔍 Rechercher un colis</h2>
+      <div class="search-box">
+        <input type="text" id="tracking-input" placeholder="Entrez un numéro de suivi..."/>
+        <button onclick="rechercherColis()">Rechercher</button>
+      </div>
+      <div id="resultat"></div>
     </div>
-    <div id="resultat"></div>
+
+    <!-- Ajouter un colis -->
+    <div class="add-card">
+      <h2>➕ Ajouter un colis</h2>
+      <div class="form-grid">
+        <input type="text" id="new-numero" placeholder="Numéro de suivi"/>
+        <input type="text" id="new-destinataire" placeholder="Destinataire"/>
+        <input type="text" id="new-origine" placeholder="Ville d'origine"/>
+        <input type="text" id="new-destination" placeholder="Ville de destination"/>
+        <select id="new-statut">
+          <option value="En attente">En attente</option>
+          <option value="En transit">En transit</option>
+          <option value="En cours de livraison">En cours de livraison</option>
+          <option value="Livré">Livré</option>
+        </select>
+        <input type="text" id="new-transporteur" placeholder="Transporteur (DHL, Cainiao...)"/>
+      </div>
+      <button class="btn-add" onclick="ajouterColis()">✅ Enregistrer le colis</button>
+    </div>
+
+    <!-- Liste des colis -->
+    <div class="list-card">
+      <h2>📋 Tous les colis</h2>
+      <div id="liste-colis"></div>
+    </div>
   </main>
+
+  <footer>
+    <p>TrackColis © 2026 — Fait avec ❤️ depuis Douala</p>
+  </footer>
 
   <script src="app.js"></script>
 </body>
