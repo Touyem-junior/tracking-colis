@@ -24,6 +24,7 @@ function afficherListe() {
       <p>🌍 ${c.origine} → ${c.destination}</p>
       <p>🚚 Transporteur : ${c.transporteur}</p>
       <p>📅 Ajouté le : ${c.date}</p>
+      ${c.photo ? `<img src="${c.photo}" style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-top:10px"/>` : ''}
       <button class="btn-delete" onclick="supprimerColis(${i})">🗑️ Supprimer</button>
     </div>
   `).join('');
@@ -42,9 +43,17 @@ function ajouterColis() {
     return;
   }
 
+  const photoInput = document.getElementById('new-photo');
+  const photo = photoInput.files[0];
+  let photoURL = '';
+  if (photo) {
+    photoURL = URL.createObjectURL(photo);
+  }
+
   colis.unshift({
     numero, destinataire, origine,
     destination, statut, transporteur,
+    photo: photoURL,
     date: new Date().toLocaleDateString('fr-FR')
   });
 
