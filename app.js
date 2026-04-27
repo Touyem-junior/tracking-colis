@@ -1,28 +1,99 @@
+let colis = JSON.parse(localStorage.getItem('colis')) || [];
+
+function sauvegarder() {
+  localStorage.setItem('colis', JSON.stringify(colis));
+}
+
+function getBadgeClass(statut) {
+  if (statut === 'Livré') return 'badge-livré';
+  if (statut === 'En transit') return 'badge-transit';
+  if (statut === 'En cours de livraison') return 'badge-livraison';
+  return 'badge-attente';
+}
+
+function afficherListe() {
+  const div = document.getElementById('liste-colis');
+  if (colis.length === 0) {
+    div.innerHTML = '<p style="color:#999;text-align:center">Aucun colis enregistré.</p>';
+    return;
+  }
+  div.innerHTML = colis.map((c, i) => `
+    <div class="colis-item">
+      <h3>📦 ${c.numero} — ${c.destinataire}</h3>
+      <span class="badge ${getBadgeClass(c.statut)}">${c.statut}</span>
+      <p>🌍 ${c.origine} → ${c.destination}</p>
+      <p>🚚 Transporteur : ${c.transporteur}</p>
+      <p>📅 Ajouté le : ${c.date}</p>
+      <button class="btn-delete" onclick="supprimerColis(${i})">🗑️ Supprimer</button>
+    </div>
+  `).join('');
+}
+
+function ajouterColis() {
+  const numero = document.getElementById('new-numero').value.trim();
+  const destinataire = document.getElementById('new-destinataire').value.trim();
+  const origine = document.getElementById('new-origine').value.trim();
+  const destination = document.getElementById('new-destination').value.trim();
+  const statut = document.getElementById('new-statut').value;
+  const transporteur = document.getElementById('new-transporteur').value.trim();
+
+  if (!numero || !destinataire || !origine || !destination) {
+    alert('⚠️ Veuillez remplir tous les champs obligatoires.');
+    return;
+  }
+
+  colis.unshift({
+    numero, destinataire, origine,
+    destination, statut, transporteur,
+    date: new Date().toLocaleDateString('fr-FR')
+  });
+
+  sauvegarder();
+  afficherListe();
+
+  document.getElementById('new-numero').value = '';
+  document.getElementById('new-destinataire').value = '';
+  document.getElementById('new-origine').value = '';
+  document.getElementById('new-destination').value = '';
+  document.getElementById('new-transporteur').value = '';
+
+  alert('✅ Colis ajouté avec succès !');
+}
+
+function supprimerColis(index) {
+  if (confirm('Supprimer ce colis ?')) {
+    colis.splice(index, 1);
+    sauvegarder();
+    afficherListe();
+  }
+}
+
 function rechercherColis() {
   const numero = document.getElementById('tracking-input').value.trim();
   const resultat = document.getElementById('resultat');
 
   if (!numero) {
-    resultat.innerHTML = '<p style="color:red">⚠️ Veuillez entrer un numéro de suivi.</p>';
+    resultat.innerHTML = '<p style="color:red">⚠️ Entrez un numéro de suivi.</p>';
     return;
   }
 
-  resultat.innerHTML = '<p>🔍 Recherche en cours...</p>';
+  const trouve = colis.find(c =>
+    c.numero.toLowerCase() === numero.toLowerCase()
+  );
 
-  setTimeout(() => {
+  if (trouve) {
     resultat.innerHTML = `
-      <h2 style="margin-bottom:16px">📦 Colis : ${numero}</h2>
-      <div style="border-left:4px solid #1a73e8; padding-left:16px; margin-bottom:12px">
-        <p><strong>Statut :</strong> En transit</p>
-        <p><strong>Dernière position :</strong> Douala, Cameroun</p>
-        <p><strong>Mise à jour :</strong> ${new Date().toLocaleDateString('fr-FR')}</p>
-      </div>
-      <div style="margin-top:20px">
-        <h3 style="margin-bottom:10px">Historique</h3>
-        <p>✅ Colis pris en charge — Expéditeur</p>
-        <p>✅ Arrivé au centre de tri</p>
-        <p>🚚 En cours de livraison</p>
-      </div>
-    `;
-  }, 1500);
+      <div class="result-box">
+        <h3>📦 Colis : ${trouve.numero}</h3>
+        <span class="badge ${getBadgeClass(trouve.statut)}">${trouve.statut}</span>
+        <p><strong>Destinataire :</strong> ${trouve.destinataire}</p>
+        <p><strong>Trajet :</strong> ${trouve.origine} → ${trouve.destination}</p>
+        <p><strong>Transporteur :</strong> ${trouve.transporteur}</p>
+        <p><strong>Date :</strong> ${trouve.date}</p>
+      </div>`;
+  } else {
+    resultat.innerHTML = `<p style="color:#f5576c">❌ Aucun colis trouvé avec ce numéro.</p>`;
+  }
 }
+
+window.onload = afficherListe;
